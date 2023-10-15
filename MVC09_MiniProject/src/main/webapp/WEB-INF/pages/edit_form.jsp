@@ -46,7 +46,10 @@
 				</tr>
 				<tr>
 					<td>Department No:</td>
-					<td><frm:input path="deptno" /></td>
+					<td><frm:select path="deptno">
+							<frm:options items="${dNoList}"/>
+
+						</frm:select></td>
 				</tr>
 				<tr>
 					<td colspan="2"><input type="submit" value="Save"></td>

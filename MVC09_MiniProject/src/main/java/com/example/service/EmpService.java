@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.entity.Employee;
+import com.example.repository.DeptRepo;
 import com.example.repository.EmpRepo;
 
 @Service
@@ -14,6 +15,9 @@ public class EmpService {
 
 	@Autowired
 	private EmpRepo repo;
+	
+	@Autowired
+	private DeptRepo deptRepo;
 
 	public List<Employee> fetchAllEmployees() {
 		return repo.findAll();
@@ -42,6 +46,11 @@ public class EmpService {
 	public String delEmp(int no) {
 		repo.deleteById(no);
 		return "Employee with EmpId: " + no + " was deleted Successfully";
+	}
+	
+	
+	public List<Integer> showAllDept(){
+		return deptRepo.fetchAllDeptNo();
 	}
 
 }

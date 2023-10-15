@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,12 +15,19 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.entity.Employee;
 import com.example.service.EmpService;
+import com.example.validator.EmployeeValidator;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class EmpController {
 
 	@Autowired
 	private EmpService service;
+	
+	@Autowired
+	private EmployeeValidator empValidator;
+	
 	
 
 
@@ -41,9 +49,17 @@ public class EmpController {
 	}
 
 	@PostMapping("/register")
-	public String addEmp(RedirectAttributes attr, @ModelAttribute("emp") Employee emp) {
+	public String addEmp(HttpSession sess, @ModelAttribute("emp") Employee emp, BindingResult errors) {
+		if(empValidator.supports(emp.getClass())) {
+			System.out.println("EmpController.addEmp() -- validator if block");
+			empValidator.validate(emp, errors);
+		}
+		if(errors.hasErrors()) {
+			return "employee_register_form";
+		}
+		System.out.println("EmpController.addEmp() --codes after validator method");
 		String msg = service.saveEmployee(emp);
-		attr.addFlashAttribute("resultmsg", msg);
+		sess.setAttribute("resultmsg", msg);
 		return "redirect:report";
 
 	}
@@ -57,7 +73,13 @@ public class EmpController {
 	}
 	
 	@PostMapping("/edit")
-	public String shoWEdit1(RedirectAttributes attr, @ModelAttribute("emp") Employee emp) {
+	public String shoWEdit1(RedirectAttributes attr, @ModelAttribute("emp") Employee emp, BindingResult errors) {
+		if(empValidator.supports(Employee.class)) {
+			empValidator.validate(emp, errors);
+		}
+		if(errors.hasErrors()) {
+			return "employee_register_form";
+		}
 		String msg = service.udateEmpByNo(emp);
 		attr.addFlashAttribute("resultmsg", msg);
 		return "redirect:report";
@@ -70,4 +92,11 @@ public class EmpController {
 		return "redirect:report";
 		
 	}
+	
+// method of reference data holding the dept names
+	@ModelAttribute("dNoList")
+	public List<Integer> populateDeptNames(){
+		return service.showAllDept();
+	}
+	
 }
