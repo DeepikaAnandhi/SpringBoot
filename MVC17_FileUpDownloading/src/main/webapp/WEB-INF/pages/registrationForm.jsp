@@ -8,7 +8,7 @@
 <title>Registration</title>
 </head>
 <body>
-	<frm:form modelAttribute="js">
+	<frm:form modelAttribute="js" enctype="multipart/form-data">
 
 		<table style="text-align:center; border=10px">
 			<tr>
