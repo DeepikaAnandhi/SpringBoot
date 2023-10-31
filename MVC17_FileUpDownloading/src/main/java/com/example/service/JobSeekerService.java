@@ -1,5 +1,7 @@
 package com.example.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,5 +18,10 @@ public class JobSeekerService {
 	public String saveJobSeeker(JobSeeker jobSeeker) {
 		Integer id = repo.save(jobSeeker).getJsId();
 		return "You are registered with an ID: " + id;
+	}
+	
+	public List<JobSeeker> getAllJs() {
+		return repo.findAll();
+		
 	}
 }

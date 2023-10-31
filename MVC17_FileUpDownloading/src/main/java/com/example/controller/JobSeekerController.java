@@ -4,9 +4,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
@@ -26,6 +29,8 @@ public class JobSeekerController {
 
 	@Autowired
 	private Environment env;
+	
+	 private static Logger logger = LoggerFactory.getLogger(JobSeekerController.class);
 
 	@GetMapping("/")
 	public String showHome() {
@@ -43,6 +48,8 @@ public class JobSeekerController {
 
 //Get folder location of file uploading from application.properties file
 		String storeLocation = env.getRequiredProperty("upload.location");
+		System.out.println(storeLocation);
+		
 
 // Create storeLocation Folder if its not already there
 		File storeLocationFolder = new File(storeLocation);
@@ -82,8 +89,11 @@ public class JobSeekerController {
 		jobSeeker.setJsName(jobSeekerModel.getJsName());
 		jobSeeker.setJsAddress(jobSeekerModel.getJsAddress());
 		jobSeeker.setQualification(jobSeekerModel.getQualification());
-		jobSeeker.setPhotoPath(storeLocationFolder.getAbsolutePath() + "/" + resumeOriFName);
-		jobSeeker.setResumePath(storeLocationFolder.getAbsolutePath() + "/" + photoOriFName);
+		String resumePath =(storeLocationFolder.getAbsolutePath() + "/" + resumeOriFName).replace("/","\\");
+		String photoPath =(storeLocationFolder.getAbsolutePath() + "/" + photoOriFName).replace("/","\\");
+
+		jobSeeker.setPhotoPath(photoPath);
+		jobSeeker.setResumePath(resumePath);
 		
 		
 		String resultMsg = service.saveJobSeeker(jobSeeker);
@@ -93,6 +103,14 @@ public class JobSeekerController {
 
 		return "show_result";
 
+	}
+	
+	@GetMapping("js_report")
+	public String showAllJs(Map<String,Object> map) {
+		List<JobSeeker> list = service.getAllJs();
+		map.put("jsinfo", list);
+		return "show_report";
+		
 	}
 
 }

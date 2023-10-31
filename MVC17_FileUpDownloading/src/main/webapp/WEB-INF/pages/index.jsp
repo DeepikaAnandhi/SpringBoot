@@ -11,6 +11,7 @@
 <hr>
 <div>
 <a href="js_register">Register</a>
+<a href="js_report">Get all JobSeekers</a>
 </div>
 
 </body>
